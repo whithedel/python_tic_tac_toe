@@ -44,7 +44,13 @@ def player_input():
 def place_marker(board, marker, m):
     player_position = marker()
     display_board(board)
-    position = int(input('Please insert the position of where you would like to place your marker \n'))
+    position = 0
+    while position not in range(1,10):
+        try:
+            position = int(input('Please insert the position of where you would like to place your marker \n'))
+        except:
+            print("Posiotion available are between 1 and 9, please try again.")
+            
     m[position] = player_position
     print(chr(27) + "[2J")
 
