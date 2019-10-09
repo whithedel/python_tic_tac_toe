@@ -1,10 +1,16 @@
 #Miltiplayer Tic-tac-toe game
 import random
 
+def prPurple(skk): print("\033[95m {}\033[00m" .format(skk))
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
+def prCyan(skk): print("\033[96m {}\033[00m" .format(skk)) 
+
 turn = ' '
 player1 = ''
 player2 = ''
 gameOn = True
+validate = ' '
 
 # m = {
 #         1:' ',
@@ -31,7 +37,7 @@ def display_board(board):
 }
     shape = {board:[1,3,1,2,1,4,1,2,1,5,1]}
     for pattern in shape[board[0]]:
-        print(patterns[pattern])
+        prRed(patterns[pattern])
 
 def player_input():
     global player1
@@ -42,17 +48,22 @@ def player_input():
     print(f'Player 2 : {player2}')
 
 def place_marker(board, marker, m):
+    global validate
     player_position = marker()
     display_board(board)
     position = 0
     while position not in range(1,10):
         try:
-            position = int(input('Please insert the position of where you would like to place your marker \n'))
+            position = int(input('Please insert the position between 1 and 9 to place your marker.\n'))
         except:
             print("Posiotion available are between 1 and 9, please try again.")
-            
-    m[position] = player_position
     print(chr(27) + "[2J")
+    if m[position] != "X" and m[position] != "O":
+        validate = player_position
+        m[position] = player_position
+    else:
+        print("This position has a marker already.")
+    
 
 
 def win_check(m):
