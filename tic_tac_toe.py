@@ -12,18 +12,6 @@ player2 = ''
 gameOn = True
 validate = ' '
 
-# m = {
-#         1:' ',
-#         2:' ',
-#         3:' ',
-#         4:' ',
-#         5:' ',
-#         6:' ',
-#         7:' ',
-#         8:' ',
-#         9:' ',
-#     }
-
 board = '#'
 
 
@@ -37,15 +25,15 @@ def display_board(board):
 }
     shape = {board:[1,3,1,2,1,4,1,2,1,5,1]}
     for pattern in shape[board[0]]:
-        prRed(patterns[pattern])
+        prPurple(patterns[pattern])
 
 def player_input():
     global player1
     global player2
-    player1 = "X" if input('Please pick a marker "X" or "O" \n') == "x"or"X" else "O"
+    player1 = "X" if input('\033[93m Please pick a marker "X" or "O". \n \033[00m') == "x"or"X" else "O"
     player2 = "O" if player1 == "X" else "X"
-    print(f'Player 1 : {player1}')
-    print(f'Player 2 : {player2}')
+    prCyan(f'Player 1 : {player1}')
+    prCyan(f'Player 2 : {player2}')
 
 def place_marker(board, marker, m):
     global validate
@@ -54,15 +42,17 @@ def place_marker(board, marker, m):
     position = 0
     while position not in range(1,10):
         try:
-            position = int(input('Please insert the position between 1 and 9 to place your marker.\n'))
+            position = int(input('\033[93m Please insert the position between 1 and 9 to place your marker.\n \033[00m'))
+            prCyan(chr(27) + "[2J")
+            if m[position] != "X" and m[position] != "O":
+                validate = True
+                m[position] = player_position
+            else:
+                prRed("This position has a marker already.")
         except:
-            print("Posiotion available are between 1 and 9, please try again.")
-    print(chr(27) + "[2J")
-    if m[position] != "X" and m[position] != "O":
-        validate = player_position
-        m[position] = player_position
-    else:
-        print("This position has a marker already.")
+            display_board(board)
+            prRed("Position is out of range. Try again!")
+    
     
 
 
@@ -80,16 +70,16 @@ def win_check(m):
     global gameOn
     for x in setChecker:
         if x == {'X'}:
-            print('Player "X" has won the game.')
+            prCyan('Player "X" has won the game.')
             gameOn = False
             return True
         elif x == {'O'}:
-            print('Player "O" has won the game.')
+            prCyan('Player "O" has won the game.')
             gameOn = False
             return True
         elif setChecker[0] == {'X','O'} and setChecker[1] == {'X','O'} and setChecker[2] == {'X','O'}:
             gameOn = False
-            print("Draw game!")
+            prCyan("Draw game!")
             return True
         else:
             continue
@@ -97,21 +87,27 @@ def win_check(m):
 
 def choose_first():
     global turn
-    if turn == ' ':
-        turn = random.choice([player1,player2])
-        # print(f'Your turn player {turn}')
-        return turn
-    elif turn == 'X':
-        turn = 'O'
-        print(f'Your turn player {turn}')
-        return turn
+    global validate
+    if validate == ' ' or validate == True:
+        if turn == ' ':
+            turn = random.choice([player1,player2])
+            # print(f'Your turn player {turn}')
+            return turn
+        elif turn == 'X':
+            turn = 'O'
+            prCyan(f'Your turn player {turn}')
+            validate = False
+            return turn
+        else:
+            turn = 'X'
+            prCyan(f'Your turn player {turn}')
+            validate = False
+            return turn
     else:
-        turn = 'X'
-        print(f'Your turn player {turn}')
         return turn
 
 def replay():
-    return input('Do you want to play again? Enter Yes or No: ').lower().startswith('y')
+    return input('\033[93m Do you want to play again? Enter Yes or No: \033[00m').lower().startswith('y')
 
 
 while True:
